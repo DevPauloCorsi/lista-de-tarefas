@@ -1,7 +1,7 @@
 
 #  Lista de Tarefas - Fase 1
 
-Este é um projeto simples de **Lista de Tarefas (To-Do List)** desenvolvido em **Python (Flask)** com integração ao **MySQL**.
+Este é um projeto simples de Lista de Tarefas desenvolvido em HTML e CSS, Python Flask, com integração ao banco MySQL.
 O objetivo é permitir que o usuário cadastre e visualize suas tarefas, organizando suas atividades de forma prática.
 
 ---
