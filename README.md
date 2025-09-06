@@ -34,11 +34,12 @@ lista_de_tarefas/
 Foi criado o banco de dados **`db_lista_tarefa`** no MySQL, com a tabela:
 
 ```sql
-CREATE TABLE tarefas (
-    id INT AUTO_INCREMENT PRIMARY KEY,
-    descricao VARCHAR(255) NOT NULL,
-    status VARCHAR(20) DEFAULT 'pendente'
-);
+CREATE TABLE `tarefas` (
+  `id` int NOT NULL AUTO_INCREMENT,
+  `descricao` varchar(255) NOT NULL,
+  `status` varchar(50) DEFAULT 'pendente',
+  PRIMARY KEY (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=12 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 ```
 
 ### Colunas:
