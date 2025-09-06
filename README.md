@@ -111,6 +111,6 @@ python app.py
 * Melhorar usabilidade e layout.
 
 ---
-Projeto desenvolvido para aprendizado e prática integrando **HTML/CSS +Puthon-Flask + Banco MySQL**.
+Projeto desenvolvido para aprendizado e prática integrando **HTML/CSS +Python-Flask + Banco MySQL**.
 
 
