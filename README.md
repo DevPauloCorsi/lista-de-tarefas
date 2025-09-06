@@ -48,6 +48,17 @@ CREATE TABLE `tarefas` (
 * `descricao` → Texto descritivo da tarefa.
 * `status` → Estado da tarefa (por padrão: **pendente**).
 
+### Como Usar:
+Baixe/clone o projeto do GitHub.
+
+Abre o MySQL Workbench.
+
+Vai em File → Run SQL Script… (ou abre o arquivo no editor de query).
+
+Executa o script db_lista_de_tarefas.sql.
+
+Pronto, o banco de dados db_lista_tarefa é recriado com tudo, e o app Flask vai funcionar.
+
 ---
 
 ## Funcionalidades da Fase 1
