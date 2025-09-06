@@ -98,18 +98,19 @@ python app.py
 ```
 
 6. Acesse no navegador:
-   👉 [http://127.0.0.1:5000](http://127.0.0.1:5000)
+    vai aparecer algo como:
+   [http://127.0.0.1:5000](http://127.0.0.1:5000)
 
 ---
 
 # Próximos Passos (Fase 2)
 
-* Implementar **checkbox/botão "Concluir"** para atualizar o status.
+* Implementar **botão "Concluir"** para atualizar o status.
 * Exibir tarefas concluídas riscadas na tela.
 * Banco de dados: a coluna status continuará presente, agora podendo ter os valores pendente ou concluída.
 * Melhorar usabilidade e layout.
 
 ---
-Projeto desenvolvido para aprendizado e prática de integração **Flask + MySQL**.
+Projeto desenvolvido para aprendizado e prática integrando **HTML/CSS +Puthon-Flask + Banco MySQL**.
 
 
