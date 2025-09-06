@@ -1,22 +1,47 @@
 <!DOCTYPE html>
-<html lang="pt-br">
+<html lang="pt-BR">
+
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Lista de tarefas</title>
+    <title>Lista de Tarefas</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Importa o arquivo CSS (style.css) da pasta "static" do Flask -->
 </head>
+
 <body>
-    <h1>Cadastro de Tarefas</h1>
-    <form action="/add" method="POST">
-        <input type="text" name="descricao" placeholder="Digite a tarefa" required>
-        <button type="submit">Adicionar</button>
-    </form>
-    
-    <ul>
-        {% for tarefa in tarefas %}
-            <li>{{ tarefa.descricao }} - {{ tarefa.status }}</li>
-        {% endfor %}
-    </ul>
+    <!-- Cabeçalho do site -->
+    <header>
+        <h1>Crie sua Lista de Tarefas</h1>
+    </header>
+
+    <!-- Conteúdo principal -->
+    <main>
+        <!-- method="POST" envia os dados ao servidor -->
+        <!-- action="/add" envia para a rota /add do Flask -->
+        <form method="POST" action="/add">
+            <!-- Campo de texto para digitar a descrição da tarefa -->
+            <input type="text" name="descricao" placeholder="Digite sua tarefa..." required>
+            <!-- Campo de texto para digitar a descrição da tarefa -->
+            <button type="submit">Adicionar</button>
+        </form>
+
+        <!-- Seção que lista as tarefas -->
+        <section class="tarefas">
+            <h2>Tarefas</h2>
+            <ul>
+                <!-- Loop do Jinja (Flask) que percorre todas as tarefas vindas do banco -->
+                {% for tarefa in tarefas %}
+                <!-- Cada item da lista mostra a descrição e o status -->
+                <li>{{ tarefa.descricao }} - <span>{{ tarefa.status }}</span></li>
+                {% endfor %}
+            </ul>
+        </section>
+    </main>
+
+    <!-- Rodapé -->
+    <footer>
+        <p> Organize suas ideias é durma tranquilo </p>
+    </footer>
 </body>
+
 </html>
