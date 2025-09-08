@@ -41,7 +41,7 @@ app = Flask(__name__)
 db = mysql.connector.connect(
     host="localhost",        # Endereço do servidor MySQL
     user="root",             # Usuário do MySQL
-    password="1735pr40!FR",  # Senha do MySQL (atenção: cuidado em deixar exposta em código público)
+    password="",  # Senha do MySQL
     database="db_lista_tarefa" # Nome do banco de dados
 )
 
