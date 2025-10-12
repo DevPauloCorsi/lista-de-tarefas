@@ -4,43 +4,57 @@
 <head>
     <meta charset="UTF-8">
     <title>Lista de Tarefas</title>
+    <!-- Importa o arquivo CSS principal -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-    <!-- Importa o arquivo CSS (style.css) da pasta "static" do Flask -->
 </head>
 
 <body>
-    <!-- Cabeçalho do site -->
     <header>
         <h1>Crie sua Lista de Tarefas</h1>
     </header>
 
-    <!-- Conteúdo principal -->
     <main>
-        <!-- method="POST" envia os dados ao servidor -->
-        <!-- action="/add" envia para a rota /add do Flask -->
+        <!-- Formulário que envia uma nova tarefa para o backend -->
         <form method="POST" action="/add">
             <!-- Campo de texto para digitar a descrição da tarefa -->
-            <input type="text" name="descricao" placeholder="Digite sua tarefa..." required>
-            <!-- Campo de texto para digitar a descrição da tarefa -->
+            <input type="text" name="descricao" placeholder="Digite sua tarefa..." maxlength="250" autocomplete="off"
+                value="" required>
+            <!-- Botão para adicionar a tarefa -->
             <button type="submit">Adicionar</button>
         </form>
 
-        <!-- Seção que lista as tarefas -->
+        <!-- Seção onde as tarefas serão listadas -->
         <section class="tarefas">
             <h2>Tarefas</h2>
             <ul>
-                <!-- Loop do Jinja (Flask) que percorre todas as tarefas vindas do banco -->
+                <!-- Loop Jinja do Flask: percorre todas as tarefas enviadas pelo backend -->
                 {% for tarefa in tarefas %}
-                <!-- Cada item da lista mostra a descrição e o status -->
-                <li>{{ tarefa.descricao }} - <span>{{ tarefa.status }}</span></li>
+                <li>
+                    <!-- Estrutura condicional: verifica se a tarefa já foi concluída -->
+                    {% if tarefa.status == 'concluída' %}
+                        <!-- Se estiver concluída, o texto recebe uma classe especial para estilização -->
+                        <span class="concluida">{{ tarefa.descricao }}</span>
+                        <!-- Mostra o status da tarefa -->
+                        <span>{{ tarefa.status }}</span>
+
+                    {% else %}
+                        <!-- Se estiver pendente, mostra normalmente -->
+                        <span>{{ tarefa.descricao }}</span>
+                        <span>{{ tarefa.status }}</span>
+
+                        <!-- Novo elemento adicionado:
+                             Botão/link "Concluir" que envia o ID da tarefa para a rota Flask "/concluir/<id>"
+                             Essa rota altera o status no banco de dados para "concluída" -->
+                        <a href="/concluir/{{ tarefa.id }}" class="btn-concluir">Concluir</a>
+                    {% endif %}
+                </li>
                 {% endfor %}
             </ul>
         </section>
     </main>
 
-    <!-- Rodapé -->
     <footer>
-        <p> Organize suas ideias é durma tranquilo </p>
+        <p>Organize suas ideias e durma tranquilo</p>
     </footer>
 </body>
 

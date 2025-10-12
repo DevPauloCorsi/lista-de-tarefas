@@ -1,7 +1,7 @@
 
-#  Lista de Tarefas - Fase 1
+#  Lista de Tarefas - Fase 
 
-Este é um projeto simples de **Lista de Tarefas (To-Do List)** desenvolvido em **Python (Flask)** com integração ao **MySQL**.
+Este é um projeto simples de **Lista de Tarefas ** desenvolvido em **Python (Flask)** com integração ao **MySQL**.
 O objetivo é permitir que o usuário cadastre e visualize suas tarefas, organizando suas atividades de forma prática.
 
 ---
@@ -37,7 +37,7 @@ Foi criado o banco de dados **`db_lista_tarefa`** no MySQL, com a tabela:
 CREATE TABLE tarefas (
     id INT AUTO_INCREMENT PRIMARY KEY,
     descricao VARCHAR(255) NOT NULL,
-    status VARCHAR(20) DEFAULT 'pendente'
+    status VARCHAR(50) DEFAULT 'pendente'
 );
 ```
 
@@ -45,7 +45,7 @@ CREATE TABLE tarefas (
 
 * `id` → Identificador único da tarefa.
 * `descricao` → Texto descritivo da tarefa.
-* `status` → Estado da tarefa (por padrão: **pendente**).
+* `status` → Estado da tarefa (**pendente** ou **Concluida**).
 
 ---
 
@@ -56,13 +56,32 @@ Exibir a lista de tarefas cadastradas.
 Coluna **status** criada no banco (por padrão aparece como "pendente").
 Frontend simples e responsivo.
 
+## Fase 2
+A segunda fase trouxe melhorias visuais, funcionais e estruturais no projeto.
+
+Backend (Flask / app.py)
+Implementada a rota /concluir/<id> para marcar tarefas como concluídas.
+Atualização direta do status no banco de dados.
+Validação para evitar salvar tarefas vazias.
+Inclusão de cursor.close() e db.commit() após cada operação (boa prática).
+Frontend (HTML + CSS)
+Adicionado botão verde “Concluir” ao lado de cada tarefa pendente.
+Quando o botão é clicado, o status muda para “concluída”.
+Tarefas concluídas aparecem com texto riscado e cor cinza.
+Layout refeito usando CSS Grid, com 3 colunas fixas:
+Descrição | Status | Botão Concluir.
+
+
 ---
 
 ## Exemplo de Uso
 
-* O usuário digita uma tarefa no campo de texto.
-* A tarefa é salva no banco com o status **pendente**.
-* A lista de tarefas é exibida logo abaixo do formulário.
+1.	O usuário digita uma tarefa e clica em **Adicionar**.
+2.	A tarefa é salva no banco com o status **pendente**.
+3.	A lista exibe a nova tarefa na tela.
+4.	Ao clicar em **Concluir**, o status muda para **concluída** e o texto fica riscado.
+________________________________________
+
 
 ---
 
@@ -103,12 +122,9 @@ python app.py
 
 ---
 
-# Próximos Passos (Fase 2)
+# Próximos Passos (Fase 3)
 
-* Implementar **botão "Concluir"** para atualizar o status.
-* Exibir tarefas concluídas riscadas na tela.
-* Banco de dados: a coluna status continuará presente, agora podendo ter os valores pendente ou concluída.
-* Melhorar usabilidade e layout.
+* Implementar **botões "aditar e excluir"** para editar ou exluir tarefas e atualizar o status.
 
 ---
 Projeto desenvolvido para aprendizado e prática integrando **HTML/CSS +Puthon-Flask + Banco MySQL**.

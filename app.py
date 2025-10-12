@@ -1,83 +1,78 @@
-# from flask import Flask, render_template, request, redirect
-# import mysql.connector
-
-# app = Flask(__name__)
-
-# # Conexão com MySQL
-# db = mysql.connector.connect(
-#     host="localhost",
-#     user="root",
-#     password="1735pr40!FR",  
-#     database="db_lista_tarefa"
-# )
-
-
-# @app.route('/')
-# def index():
-#     cursor = db.cursor(dictionary=True)
-#     cursor.execute("SELECT * FROM tarefas")
-#     tarefas = cursor.fetchall()
-#     return render_template('index.html', tarefas=tarefas)
-
-# @app.route('/add', methods=['POST'])
-# def add():
-#     descricao = request.form['descricao']
-#     cursor = db.cursor()
-#     cursor.execute("INSERT INTO tarefas (descricao) VALUES (%s)", (descricao,))
-#     db.commit()
-#     return redirect('/')
-
-# if __name__ == '__main__':
-#     app.run(debug=True)
-
-# Importa as bibliotecas necessárias do Flask e do MySQL
+# IMPORTAÇÕES E CONFIGURAÇÃO DO APP
 from flask import Flask, render_template, request, redirect
 import mysql.connector
 
-# Cria a aplicação Flask
+# Criação do aplicativo Flask
 app = Flask(__name__)
 
 # Conexão com o banco de dados MySQL
 db = mysql.connector.connect(
-    host="localhost",        # Endereço do servidor MySQL
-    user="root",             # Usuário do MySQL
-    password="1735pr40!FR",  # Senha do MySQL (atenção: cuidado em deixar exposta em código público)
-    database="db_lista_tarefa" # Nome do banco de dados
+    host="localhost",
+    user="root",
+    password="1735pr40!FR",
+    database="db_lista_tarefa"
 )
 
-# Rota principal do site (página inicial)
+
+# ROTA PRINCIPAL — LISTA TODAS AS TAREFAS
 @app.route('/')
 def index():
-    # Cria um cursor que retorna os resultados no formato de dicionário
+    # Isso faz com que o resultado venha como dicionário (acessamos por nome da coluna)
     cursor = db.cursor(dictionary=True)
 
-    # Busca todas as tarefas na tabela 'tarefas'
+    # alterado para incluir a coluna "status"
     cursor.execute("SELECT * FROM tarefas")
-    tarefas = cursor.fetchall()  # Recupera os resultados
 
-    # Renderiza o template index.html e envia a lista de tarefas para ele
+    # Recupera todas as tarefas
+    tarefas = cursor.fetchall()
+
+    cursor.close()  # Boa prática: fecha o cursor após usar
+
+    # Renderiza o template com a lista de tarefas e seus status
     return render_template('index.html', tarefas=tarefas)
 
 
-# Rota para adicionar novas tarefas (recebe dados via formulário POST)
+
+# ROTA PARA ADICIONAR NOVAS TAREFAS
 @app.route('/add', methods=['POST'])
 def add():
-    # Pega a descrição da tarefa digitada no formulário
-    descricao = request.form['descricao']
+    # NOVO: strip() remove espaços extras no início/fim
+    descricao = request.form['descricao'].strip()
 
-    # Cria um cursor normal (sem dicionário)
-    cursor = db.cursor()
+    # Evita salvar tarefas vazias
+    if descricao:
+        cursor = db.cursor()
 
-    # Insere a nova tarefa na tabela
-    cursor.execute("INSERT INTO tarefas (descricao) VALUES (%s)", (descricao,))
+        # ALTERADO: agora o INSERT inclui também o campo 'status'
+        # Todas as novas tarefas começam com status 'pendente'
+        cursor.execute(
+            "INSERT INTO tarefas (descricao, status) VALUES (%s, %s)",
+            (descricao, 'pendente')
+        )
 
-    # Confirma a inserção no banco (commit salva a operação)
-    db.commit()
+        db.commit()  # Confirma a inserção
+        cursor.close()  # Fecha o cursor incluido na fase 2
 
-    # Redireciona de volta para a página inicial
+    # Retorna para a página inicial
     return redirect('/')
 
 
-# Garante que a aplicação Flask rode apenas quando o arquivo for executado diretamente
+# NOVA ROTA fase 2: CONCLUIR UMA TAREFA
+# permite atualizar o status da tarefa de 'pendente' → 'concluída'
+@app.route('/concluir/<int:id>')
+def concluir(id):
+    cursor = db.cursor()
+
+    #  Atualiza o campo 'status' da tarefa no banco de dados
+    cursor.execute("UPDATE tarefas SET status = 'concluída' WHERE id = %s", (id,))
+
+    db.commit()  # Grava a atualização
+    cursor.close()  # Fecha o cursor
+
+    # Retorna para a página principal (onde o status agora aparece atualizado)
+    return redirect('/')
+
+
+# EXECUÇÃO DO SERVIDOR FLASK
 if __name__ == '__main__':
-    app.run(debug=True)  # Inicia o servidor em modo debug (mostra erros detalhados)
+    app.run(debug=True)

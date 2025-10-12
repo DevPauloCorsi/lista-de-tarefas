@@ -1,4 +1,4 @@
-/* Estilização geral da página */
+/*  ESTILIZAÇÃO GERAL DA PÁGINA   */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -6,7 +6,7 @@ body {
     color: #000;
 }
 
-/* Cabeçalho */
+/* Cabeçalho da página */
 header {
     background: #000;
     color: #fff;
@@ -18,7 +18,7 @@ header {
     font-weight: bold;
 }
 
-/* Conteúdo principal */
+/* Conteúdo principal (onde ficam formulário e lista) */
 main {
     max-width: 700px;
     margin: 2rem auto;
@@ -28,22 +28,24 @@ main {
     box-shadow: 10px 10px 0px #000;
 }
 
-/* Formulário */
+/*  FORMULÁRIO DE NOVAS TAREFAS    */
+
+/* Coloca o campo de texto e o botão lado a lado */
 form {
     display: flex;
     gap: 10px;
     margin-bottom: 2rem;
 }
 
-/* Campo de texto */
+/* Campo de digitação da tarefa */
 input[type="text"] {
-    flex: 1;
+    flex: 1; /* Ocupa o máximo de espaço possível */
     padding: 10px;
     border: 3px solid #000;
     font-size: 1rem;
 }
 
-/* Botão */
+/* Botão de "Adicionar" */
 button {
     background: #ff0000;
     color: #fff;
@@ -54,37 +56,56 @@ button {
     text-transform: uppercase;
     transition: all 0.3s ease;
 }
-/* Efeito botão */
+
+/* Efeito ao passar o mouse */
 button:hover {
     background: #000;
     color: #ff0000;
 }
 
-/* Título da lista de tarefas */
+/* Título da seção de tarefas */
 .tarefas h2 {
     margin-bottom: 1rem;
     text-transform: uppercase;
 }
 
-/* Lista de tarefas */
+/* Remove estilo padrão da lista */
 .tarefas ul {
     list-style: none;
     padding: 0;
+    margin: 0;
 }
 
-/* Cada item da lista */
+/* NOVO: Layout em "grid" para organizar as colunas:
+   - 1ª coluna: descrição
+   - 2ª coluna: status
+   - 3ª coluna: botão "Concluir"
+*/
 .tarefas li {
+    display: grid;
+    grid-template-columns: 1fr 120px 120px; /* <<< ALTERADO: 3 colunas fixas */
+    align-items: center;
     background: #f4f4f4;
     border: 2px solid #000;
     margin-bottom: 10px;
     padding: 10px;
     font-weight: bold;
-    display: flex;
-    justify-content: space-between;
-    flex-wrap: wrap; /* permite quebrar no mobile */
+    text-align: left;
+
+    /* NOVOS: evitam que textos longos invadam outras colunas */
+    word-wrap: break-word;
+    word-break: break-word;
+    overflow-wrap: break-word;
 }
 
-/* Rodapé */
+/* Centraliza a coluna de status */
+.tarefas li span {
+    text-align: center;
+}
+
+
+/*  RODAPÉ                         */
+
 footer {
     background: #000;
     color: #fff;
@@ -94,29 +115,53 @@ footer {
     font-style: italic;
 }
 
-/* Responsividade: telas até 768px (tablets e celulares maiores) */
+
+/*  NOVO: BOTÃO "CONCLUIR"        */
+
+.btn-concluir {
+    background: #28a745; /* Verde de ação positiva */
+    color: #fff;
+    border: 2px solid #000;
+    padding: 6px 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+    text-align: center;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+/* Efeito hover do botão "Concluir" */
+.btn-concluir:hover {
+    background: #000;     /* Fica com fundo preto */
+    color: #28a745;       /* E o texto verde */
+}
+
+
+/*  NOVO: TEXTO DE TAREFA CONCLUÍDA */
+.concluida {
+    text-decoration: line-through; /* Risco no texto */
+    color: #777; /* Cor mais clara */
+}
+
+
+/*  RESPONSIVIDADE                 */
+
+/* Para telas médias (até 768px) */
 @media (max-width: 768px) {
-    main {
-        margin: 1rem;
-        padding: 1.5rem;
+    /* <<< CORRIGIDO: faltava o ponto antes de "tarefas" */
+    .tarefas li {
+        grid-template-columns: 1fr; /* Muda para uma única coluna */
+        text-align: left;
     }
 
-    form {
-        flex-direction: column;
-    }
-
-    button {
-        width: 100%;
-        padding: 12px;
-    }
-
-    header {
-        font-size: 1.5rem;
-        padding: 1.5rem 1rem;
+    .tarefas li span,
+    .btn-concluir {
+        margin-top: 8px; /* Espaço entre texto e botão */
+        text-align: left;
     }
 }
 
-/* Responsividade: telas até 480px (celulares pequenos) */
+/* Para telas pequenas (até 480px) */
 @media (max-width: 480px) {
     main {
         padding: 1rem;
@@ -133,8 +178,5 @@ footer {
 
     .tarefas li {
         font-size: 0.9rem;
-        flex-direction: column;
-        align-items: flex-start;
     }
 }
-
