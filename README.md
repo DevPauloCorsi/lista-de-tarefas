@@ -1,5 +1,5 @@
 
-#  Lista de Tarefas - Fase 
+#  Lista de Tarefas - Fase 2
 
 Este é um projeto simples de **Lista de Tarefas ** desenvolvido em **Python (Flask)** com integração ao **MySQL**.
 O objetivo é permitir que o usuário cadastre e visualize suas tarefas, organizando suas atividades de forma prática.
