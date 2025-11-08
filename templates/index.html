@@ -4,58 +4,69 @@
 <head>
     <meta charset="UTF-8">
     <title>Lista de Tarefas</title>
-    <!-- Importa o arquivo CSS principal -->
+    <!-- Mantido: importação do CSS principal -->
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 
 <body>
+
     <header>
-        <h1>Crie sua Lista de Tarefas</h1>
+        <!-- Mudança no título: agora mais direto -->
+        <h1>Lista de Tarefas</h1>
     </header>
 
     <main>
-        <!-- Formulário que envia uma nova tarefa para o backend -->
+        <!-- Formulário simplificado (removido maxlength e autocomplete do input) -->
         <form method="POST" action="/add">
-            <!-- Campo de texto para digitar a descrição da tarefa -->
-            <input type="text" name="descricao" placeholder="Digite sua tarefa..." maxlength="250" autocomplete="off"
-                value="" required>
-            <!-- Botão para adicionar a tarefa -->
+            <input type="text" name="descricao" placeholder="Digite sua tarefa..." required>
             <button type="submit">Adicionar</button>
         </form>
 
-        <!-- Seção onde as tarefas serão listadas -->
-        <section class="tarefas">
+        <!-- Alterado de <section> para <div> apenas por escolha semântica -->
+        <div class="tarefas">
             <h2>Tarefas</h2>
             <ul>
-                <!-- Loop Jinja do Flask: percorre todas as tarefas enviadas pelo backend -->
                 {% for tarefa in tarefas %}
                 <li>
-                    <!-- Estrutura condicional: verifica se a tarefa já foi concluída -->
-                    {% if tarefa.status == 'concluída' %}
-                        <!-- Se estiver concluída, o texto recebe uma classe especial para estilização -->
-                        <span class="concluida">{{ tarefa.descricao }}</span>
-                        <!-- Mostra o status da tarefa -->
-                        <span>{{ tarefa.status }}</span>
+                    <!-- NOVO BLOCO: agora o texto e o status da tarefa são agrupados -->
+                    <div class="tarefa-info">
+                        <!-- Adicionada condição inline para aplicar classe "concluida" dinamicamente -->
+                        <!-- Adicionado atributo title="{{ tarefa.descricao }}" para mostrar o texto completo ao passar o mouse -->
+                        <span class="{% if tarefa.status == 'concluída' %}concluida{% endif %}"
+                            title="{{ tarefa.descricao }}">
+                            {{ tarefa.descricao }}
+                        </span>
 
-                    {% else %}
-                        <!-- Se estiver pendente, mostra normalmente -->
-                        <span>{{ tarefa.descricao }}</span>
-                        <span>{{ tarefa.status }}</span>
+                        <!-- Alterado o <span> do status para <small> -->
+                        <!-- Adicionadas classes dinâmicas: "pendente" (amarelo) e "concluida" (verde) -->
+                        <small
+                            class="status {% if tarefa.status == 'pendente' %}pendente{% elif tarefa.status == 'concluída' %}concluida{% endif %}">
+                            {{ tarefa.status }}
+                        </small>
+                    </div>
 
-                        <!-- Novo elemento adicionado:
-                             Botão/link "Concluir" que envia o ID da tarefa para a rota Flask "/concluir/<id>"
-                             Essa rota altera o status no banco de dados para "concluída" -->
+                    <!-- NOVO BLOCO: os botões foram separados em um container próprio -->
+                    <!-- Isso permite alinhá-los à direita com flexbox no CSS -->
+                    <div class="botoes">
+                        {% if tarefa.status != 'concluída' %}
+                        <!-- Botão “Concluir” continua com a lógica condicional -->
                         <a href="/concluir/{{ tarefa.id }}" class="btn-concluir">Concluir</a>
-                    {% endif %}
+                        {% endif %}
+                        <!-- NOVOS BOTÕES adicionados -->
+                        <a href="/editar/{{ tarefa.id }}" class="btn-editar">Editar</a>
+                        <a href="/excluir/{{ tarefa.id }}" class="btn-excluir"
+                            onclick="return confirm('Tem certeza que deseja excluir esta tarefa?')">Excluir</a>
+                    </div>
                 </li>
                 {% endfor %}
             </ul>
-        </section>
+        </div>
     </main>
-
     <footer>
-        <p>Organize suas ideias e durma tranquilo</p>
+        <!-- Texto do rodapé atualizado -->
+        <p>Organize suas tarefas e durma tranquilo.</p>
     </footer>
+
 </body>
 
 </html>

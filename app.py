@@ -5,7 +5,7 @@ import mysql.connector
 # Criação do aplicativo Flask
 app = Flask(__name__)
 
-# Conexão com o banco de dados MySQL
+# Conexão com o banco de dados MySQL — permanece igual
 db = mysql.connector.connect(
     host="localhost",
     user="root",
@@ -13,65 +13,99 @@ db = mysql.connector.connect(
     database="db_lista_tarefa"
 )
 
-
 # ROTA PRINCIPAL — LISTA TODAS AS TAREFAS
 @app.route('/')
 def index():
-    # Isso faz com que o resultado venha como dicionário (acessamos por nome da coluna)
+    # Mantido: usa cursor como dicionário para acessar por nome de coluna
     cursor = db.cursor(dictionary=True)
 
-    # alterado para incluir a coluna "status"
+    # Já havia sido alterado antes para incluir o campo "status" no SELECT
     cursor.execute("SELECT * FROM tarefas")
 
-    # Recupera todas as tarefas
     tarefas = cursor.fetchall()
+    cursor.close()  # Boa prática adicionada em versões anteriores
 
-    cursor.close()  # Boa prática: fecha o cursor após usar
-
-    # Renderiza o template com a lista de tarefas e seus status
+    # Exibe agora as tarefas com status (pendente / concluída)
     return render_template('index.html', tarefas=tarefas)
-
-
 
 # ROTA PARA ADICIONAR NOVAS TAREFAS
 @app.route('/add', methods=['POST'])
 def add():
-    # NOVO: strip() remove espaços extras no início/fim
+    # strip() remove espaços extras — melhoria adicionada
     descricao = request.form['descricao'].strip()
 
-    # Evita salvar tarefas vazias
+    # Previne salvar tarefas em branco
     if descricao:
         cursor = db.cursor()
 
-        # ALTERADO: agora o INSERT inclui também o campo 'status'
-        # Todas as novas tarefas começam com status 'pendente'
+        # ALTERAÇÃO: agora o INSERT também inclui o campo "status"
+        # Todas as tarefas novas começam como 'pendente'
         cursor.execute(
             "INSERT INTO tarefas (descricao, status) VALUES (%s, %s)",
             (descricao, 'pendente')
         )
 
-        db.commit()  # Confirma a inserção
-        cursor.close()  # Fecha o cursor incluido na fase 2
+        db.commit()  
+        cursor.close()  # Fechamento do cursor — adicionado como boa prática
 
-    # Retorna para a página inicial
     return redirect('/')
 
-
-# NOVA ROTA fase 2: CONCLUIR UMA TAREFA
-# permite atualizar o status da tarefa de 'pendente' → 'concluída'
+# CONCLUIR UMA TAREFA — já existia
 @app.route('/concluir/<int:id>')
 def concluir(id):
     cursor = db.cursor()
 
-    #  Atualiza o campo 'status' da tarefa no banco de dados
+    # Atualiza o campo status para "concluída"
     cursor.execute("UPDATE tarefas SET status = 'concluída' WHERE id = %s", (id,))
 
-    db.commit()  # Grava a atualização
-    cursor.close()  # Fecha o cursor
-
-    # Retorna para a página principal (onde o status agora aparece atualizado)
+    db.commit()
+    cursor.close()
     return redirect('/')
 
+# NOVA ROTA: EXCLUIR UMA TAREFA
+@app.route('/excluir/<int:id>')
+def excluir(id):
+    # NOVO BLOCO adiciona funcionalidade de exclusão
+    cursor = db.cursor()
+
+    # Comando SQL DELETE para remover a tarefa do banco
+    cursor.execute("DELETE FROM tarefas WHERE id = %s", (id,))
+
+    db.commit()   # Aplica a exclusão permanentemente
+    cursor.close()
+    return redirect('/')
+
+# NOVA ROTA: EDITAR UMA TAREFA
+@app.route('/editar/<int:id>', methods=['GET', 'POST'])
+def editar(id):
+    # Usa dictionary=True para acessar colunas por nome
+    cursor = db.cursor(dictionary=True)
+    
+    # Quando o formulário for enviado (POST):
+    if request.method == 'POST':
+        nova_descricao = request.form['descricao'].strip()
+        if nova_descricao:
+            # Atualiza a descrição e redefine o status para "pendente"
+            #  (mesmo se ela já estava concluída)
+            cursor.execute("""
+                UPDATE tarefas 
+                SET descricao = %s, status = 'pendente'
+                WHERE id = %s
+            """, (nova_descricao, id))
+            db.commit()
+        
+        cursor.close()
+        return redirect('/')
+    
+    # Quando a rota for acessada via GET (abrindo a página de edição)
+    else:
+        # Busca os dados da tarefa para preencher o campo no formulário
+        cursor.execute("SELECT * FROM tarefas WHERE id = %s", (id,))
+        tarefa = cursor.fetchone()
+        cursor.close()
+        
+        # Renderiza o novo template "editar.html"
+        return render_template('editar.html', tarefa=tarefa)
 
 # EXECUÇÃO DO SERVIDOR FLASK
 if __name__ == '__main__':

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Editar Tarefa</title>
+    <!-- Linka o mesmo CSS do projeto principal -->
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+</head>
+<body>
+
+    <!-- Cabeçalho idêntico ao do index.html, mantém o design consistente -->
+    <header>
+        <h1>Editar Tarefa</h1>
+    </header>
+
+    <main>
+        <!-- Formulário que envia os dados atualizados para a rota /editar/<id> -->
+        <!-- O método POST garante que as mudanças sejam enviadas com segurança -->
+        <form method="POST" action="/editar/{{ tarefa.id }}">
+            <!-- Campo de texto preenchido automaticamente com a descrição atual -->
+            <input type="text" name="descricao" value="{{ tarefa.descricao }}" required>
+
+            <!-- Botão que envia o formulário e salva as alterações -->
+            <button type="submit">Salvar</button>
+        </form>
+
+        <!-- Link de retorno à página principal -->
+        <!-- O estilo inline aqui centraliza o link e dá espaçamento -->
+        <a href="/" style="display:block; text-align:center; margin-top:1rem;">← Voltar</a>
+    </main>
+
+    <!-- Rodapé igual ao da página principal -->
+    <footer>
+        <p> Organize suas tarefas e durma tranquilo. </p>
+    </footer>
+
+</body>
+</html>
