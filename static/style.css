@@ -1,4 +1,4 @@
-/*    ESTILIZAÇÃO GERAL DA PÁGINA */
+/* ========== ESTILOS GERAIS =============== */
 body {
     font-family: Arial, sans-serif;
     margin: 0;
@@ -6,17 +6,36 @@ body {
     color: #000;
 }
 
+/* ================ HEADER ================= */
 header {
     background: #000;
     color: #fff;
-    text-align: center;
     padding: 2rem 1rem;
-    font-size: 1.8rem;
     border-bottom: 5px solid #ff0000;
     text-transform: uppercase;
     font-weight: bold;
+
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
 }
 
+.botao-sair {
+    background-color: #ff0000;
+    color: #fff;
+    padding: 0.6rem 1.2rem;
+    border-radius: 4px;
+    text-decoration: none;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: background-color 0.3s ease;
+}
+
+.botao-sair:hover {
+    background-color: #cc0000;
+}
+
+/* ================== MAIN ================= */
 main {
     max-width: 700px;
     margin: 2rem auto;
@@ -26,14 +45,14 @@ main {
     box-shadow: 10px 10px 0px #000;
 }
 
-/* FORMULÁRIO DE NOVAS TAREFAS    */
+/* ======== FORMULÁRIO DE TAREFAS ========== */
 form {
     display: flex;
     gap: 10px;
     margin-bottom: 2rem;
 }
 
-input[type="text"] {
+main form input[type="text"] {
     flex: 1;
     padding: 10px;
     border: 3px solid #000;
@@ -56,7 +75,7 @@ button:hover {
     color: #ff0000;
 }
 
-/* LISTA DE TAREFAS */
+/* =========== LISTA DE TAREFAS ============ */
 .tarefas h2 {
     margin-bottom: 1rem;
     text-transform: uppercase;
@@ -68,13 +87,9 @@ button:hover {
     margin: 0;
 }
 
-/* LAYOUT DAS TAREFAS */
-
-/* ANTES: era usado "display: grid" com colunas fixas (1fr 120px 120px)
-AGORA: foi substituído por flexbox, deixando o layout mais fluido */
 .tarefas li {
     display: flex;
-    justify-content: space-between; /* Distribui texto/status à esquerda e botões à direita */
+    justify-content: space-between;
     align-items: center;
     background: #f4f4f4;
     border: 2px solid #000;
@@ -82,56 +97,46 @@ AGORA: foi substituído por flexbox, deixando o layout mais fluido */
     padding: 10px 15px;
     font-weight: bold;
     text-align: left;
-    box-sizing: border-box; /* Garante que padding não quebre o layout */
+    box-sizing: border-box;
 }
 
-/* NOVO BLOCO: agrupa a descrição e o status da tarefa
-   antes eles estavam soltos dentro do <li> */
+/* Agrupa texto + status */
 .tarefa-info {
     display: flex;
     align-items: center;
-    gap: 12px; /* Espaço entre texto e status */
-    flex: 1; /* Ocupa o máximo possível antes dos botões */
+    gap: 12px;
+    flex: 1;
 }
 
-/* NOVO: texto da tarefa agora tem limite e reticências (...)
-   para evitar que descrições longas quebrem o layout */
+/* Texto limitado com "..." */
 .tarefa-info span:first-child {
-    display: inline-block;
-    white-space: nowrap;      /* Impede quebra de linha */
-    overflow: hidden;         /* Esconde o texto excedente */
-    text-overflow: ellipsis;  /* Adiciona reticências */
-    max-width: 300px;         /* Define o limite da largura */
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    max-width: 300px;
 }
 
-/* NOVO BLOCO: formatação específica para o status */
+/* Status */
 .status {
     font-size: 0.9rem;
     font-weight: bold;
-    margin-left: 10px; /* Espaçamento entre texto e status */
 }
 
-/* NOVAS CORES: agora o status muda de cor conforme o tipo */
 .status.pendente {
-    color: #b1bb29; /* Amarelo ouro para tarefas pendentes */
+    color: #b1bb29;
 }
 
 .status.concluida {
-    color: #28a745; /* Verde para tarefas concluídas */
+    color: #28a745;
 }
 
-/* NOVO BLOCO: grupo dos botões à direita */
+/* Grupo de botões */
 .botoes {
     display: flex;
-    gap: 6px; /* Espaçamento entre botões */
-    margin-left: 20px; /* Separação entre status e botões */
+    gap: 6px;
+    margin-left: 20px;
 }
 
-/* BOTÕES */
-
-/* ANTES: só existia .btn-concluir
-    AGORA: há estilos unificados para três botões:
-    concluir, editar e excluir */
 .btn-concluir, .btn-editar, .btn-excluir {
     border: 2px solid #000;
     color: #fff;
@@ -139,30 +144,83 @@ AGORA: foi substituído por flexbox, deixando o layout mais fluido */
     text-transform: uppercase;
     padding: 5px 8px;
     cursor: pointer;
-    text-align: center;
-    transition: all 0.3s ease;
     font-size: 0.7rem;
+    transition: all 0.3s ease;
 }
 
-/* Cada botão tem uma cor própria */
-.btn-concluir { background: #28a745; } /* Verde sucesso */
-.btn-editar { background: #007bff; }   /* Azul edição */
-.btn-excluir { background: #dc3545; }  /* Vermelho perigo */
+.btn-concluir { background: #28a745; }
+.btn-editar { background: #007bff; }
+.btn-excluir { background: #dc3545; }
 
-/* Efeito hover individualizado para cada cor */
 .btn-concluir:hover { background: #000; color: #28a745; }
 .btn-editar:hover { background: #000; color: #007bff; }
 .btn-excluir:hover { background: #000; color: #dc3545; }
 
-/* TAREFA CONCLUÍDA */
-
-/* Mesmo efeito de riscar o texto, mas com cor ajustada */
+/* Tarefa concluída */
 .concluida {
     text-decoration: line-through;
-    color: #6c757d; /* tom mais neutro e moderno */
+    color: #6c757d;
 }
 
-/* RODAPÉ */
+/* =============== LOGIN + CADASTRO (UNIFICADO) ============ */
+.login_cadastro-box {
+    max-width: 900px;
+    margin: 2rem auto;
+    padding: 1rem;
+    text-align: center;
+}
+
+.login_cadastro-box h2 {
+    margin-bottom: 1rem;
+    text-transform: uppercase;
+}
+
+.login_cadastro-box form {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+}
+
+/* .login_cadastro-box label { */
+    /* display: none; */
+/* } */
+
+/* Inputs IGUAIS para login e cadastro */
+.login_cadastro-box input[type="text"],
+.login_cadastro-box input[type="password"] {
+    padding: 10px;
+    border: 3px solid #000;
+    width: 200px;
+    font-size: 1rem;
+    outline: none;
+}
+
+/* Botões */
+.btn-login,
+.btn-cadastro {
+    padding: 10px 20px;
+    background: #ff0000;
+    color: #fff;
+    border: 3px solid #000;
+    cursor: pointer;
+    font-weight: bold;
+    text-transform: uppercase;
+    transition: 0.3s ease;
+}
+
+.btn-login:hover,
+.btn-cadastro:hover {
+    background: #000;
+    color: #ff0000;
+}
+
+.cadastro-link,
+.login-link {
+    margin-top: 1rem;
+}
+
+/* ================= FOOTER =============== */
 footer {
     background: #000;
     color: #fff;
@@ -172,30 +230,27 @@ footer {
     font-style: italic;
 }
 
-/* RESPONSIVIDADE */
-
-/* ANTES: o grid apenas virava uma coluna.
-    AGORA: o flex muda de direção e mantém o espaçamento
-    para dispositivos médios */
+/* ============= RESPONSIVO =============== */
 @media (max-width: 768px) {
+
     .tarefas li {
-        flex-direction: column;       /* Empilha os itens verticalmente */
-        align-items: flex-start;      /* Alinha tudo à esquerda */
-        gap: 8px;                     /* Espaço entre texto e botões */
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 8px;
     }
 
     .botoes {
-        justify-content: flex-start;  /* Mantém os botões à esquerda */
-        flex-wrap: wrap;              /* Permite quebrar linha se necessário */
+        justify-content: flex-start;
+        flex-wrap: wrap;
     }
 
     .tarefa-info span:first-child {
-        max-width: 100%; /* Usa toda a largura no celular */
+        max-width: 100%;
     }
 }
 
-/* Pequenas otimizações visuais para telas pequenas */
 @media (max-width: 480px) {
+
     main {
         padding: 1rem;
     }

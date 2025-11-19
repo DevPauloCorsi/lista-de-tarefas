@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Cadastro</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+
+</head>
+
+<body>
+
+    <header>
+        <!-- Cabeçalho da página -->
+        <h1>Lista de Tarefas</h1>
+        <!-- Título exibido no topo do site -->
+    </header>
+
+    <main>
+        <!-- Conteúdo principal da página -->
+
+        <div class="login_cadastro-box">
+            <!-- Container central estilizado para o formulário de cadastro -->
+            <h2>Cadastrar</h2>
+            <!-- 
+                Bloco condicional Jinja2:
+                - Se existir uma variável chamada "error" enviada pelo Flask,
+                  mostra a mensagem dentro desse <p>.                
+            -->
+            {% if error %}
+            <p class="erro">{{ error }}</p>
+            {% endif %}
+            
+            <form method="POST">
+
+                <label for="username">Usuário:</label>
+                <!-- Rótulo do campo de usuário -->
+
+                <input type="text" id="username" name="username" placeholder="Digite novo usuário" required>
+                <!-- Campo para digitar o novo nome de usuário -->
+
+                <label for="senha">Senha:</label>
+                <!-- Rótulo para o campo de senha -->
+
+                <input type="password" id="senha" name="senha" placeholder=" Digite nova senha." required>
+                <!-- Campo de senha (oculta caracteres digitados) -->
+
+                <button type="submit" class="btn-login">Cadastrar</button>
+                <!-- Botão que envia o formulário -->
+            </form>
+
+            <p class="login-link">
+                <!-- Texto com link para redirecionar quem já tem conta -->
+
+                Já tem conta? <a href="{{ url_for('login') }}">Faça seu login.</a>
+                <!-- Link que leva para a rota de login usando url_for -->
+            </p>
+        </div>
+
+    </main>
+
+    <footer>
+        <p>Organize suas tarefas e durma tranquilo.</p>
+    </footer>
+
+</body>
+
+</html>

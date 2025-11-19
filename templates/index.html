@@ -11,8 +11,12 @@
 <body>
 
     <header>
-        <!-- Mudança no título: agora mais direto -->
+
         <h1>Lista de Tarefas</h1>
+        <!-- NOVA IMPLEMENTAÇÃO: Este link foi adicionado para permitir que o usuário faça logout.
+            Antes, o header tinha apenas o título.
+            Agora contém um botão "Sair" que redireciona para a rota /logout. -->
+        <a href="{{ url_for('logout') }}" class="botao-sair">Sair</a>
     </header>
 
     <main>

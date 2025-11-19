@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+    <meta charset="UTF-8">
+    <title>Login</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+    <!-- Importa o arquivo CSS estático através do Flask usando url_for -->
+</head>
+<body>
+    <header>
+        <h1>Lista de Tarefas</h1>
+    </header>
+    <main>
+        <div class="login_cadastro-box">
+            <!-- Div estilizada que contém todo o formulário de login -->
+            <h2>Login</h2>
+
+            {% if error %}
+            <!-- Verifica se existe uma variável 'error' enviada pelo Flask -->
+
+            <p class="erro">{{ error }}</p>
+            <!-- Caso exista erro, exibe a mensagem dentro de um parágrafo estilizado -->
+
+            {% endif %}
+            <!-- Fim da verificação de erro -->
+
+            <form method="POST">
+                <!-- Formulário de login que envia dados usando método POST -->
+
+                <label for="username">Usuário:</label>
+                <!-- Rótulo do campo de usuário -->
+
+                <input type="text" id="username" name="username" required placeholder="Usuário" required>
+                <!-- Campo para digitar o nome de usuário; obrigatório -->
+
+                <label for="senha">Senha:</label>
+                <!-- Rótulo do campo de senha -->
+
+                <input type="password" id="senha" name="senha" required placeholder="Senha" required>
+                <!-- Campo de senha; oculta os caracteres digitados; obrigatório -->
+
+                <button type="submit" class="btn-login">Entrar</button>
+                <!-- Botão que envia o formulário para autenticação -->
+            </form>
+
+            <p class="cadastro-link">
+                <!-- Texto com link para a página de cadastro -->
+
+                Não tem conta?
+                <!-- Texto informativo -->
+
+                <a href="{{ url_for('cadastro') }}">Cadastre-se</a>
+                <!-- Link gerado pelo Flask para a rota de cadastro -->
+            </p>
+        </div>
+    </main>
+    <footer>
+        <p>Organize suas tarefas e durma tranquilo.</p>
+    </footer>
+</body>
+</html>

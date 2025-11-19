@@ -1,112 +1,201 @@
-# IMPORTAÇÕES E CONFIGURAÇÃO DO APP
-from flask import Flask, render_template, request, redirect
+ 
+from flask import Flask, render_template, request, redirect, url_for, session
+# MUDANÇA: agora também é importado "session" para controle de login.
+# MUDANÇA: importado url_for para gerar rotas.
+
 import mysql.connector
+from werkzeug.security import generate_password_hash, check_password_hash
+# NOVO: funções para gerar hash e validar senhas. 
 
 # Criação do aplicativo Flask
 app = Flask(__name__)
 
-# Conexão com o banco de dados MySQL — permanece igual
+# Chave secreta para sessões (necessária para login/logout)
+app.secret_key = "chave_super_secreta_aqui"
+# NOVO: agora existe controle total de autenticação.
+
+# Conexão com o banco de dados MySQL
 db = mysql.connector.connect(
     host="localhost",
     user="root",
     password="1735pr40!FR",
     database="db_lista_tarefa"
 )
+# Conexão permanece para ambas tabelas tarefa e usuários.
+# ROTA DE LOGIN
+@app.route("/login", methods=["GET", "POST"])
+def login():
+    
+    # NOVO:  sistema de login novo.
+    if request.method == "POST":
+        username = request.form["username"]
+        senha = request.form["senha"]
+
+        cursor = db.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM usuarios WHERE username = %s", (username,))
+        user = cursor.fetchone()
+        cursor.close()
+
+        # NOVO:  senhas — comparação é feita por hash.
+        if user and check_password_hash(user["senha"], senha):
+            session["usuario_id"] = user["id"]  # NOVO: salvando ID do usuário na sessão
+            return redirect(url_for("index"))
+        else:
+            return render_template("login.html", error="Usuário ou senha inválidos")
+
+    return render_template("login.html")
+
+
+# ROTA DE CADASTRO
+@app.route("/cadastro", methods=["GET", "POST"])
+def cadastro():
+
+    # NOVO: rotA nova — não existia no código antigo.
+    if request.method == "POST":
+        username = request.form["username"]
+        senha = request.form["senha"]
+
+        cursor = db.cursor(dictionary=True)
+        cursor.execute("SELECT * FROM usuarios WHERE username = %s", (username,))
+        if cursor.fetchone():
+            return render_template("cadastro.html", error="Usuário já existe")
+
+        # NOVO: senha agora recebe hash
+        hash_senha = generate_password_hash(senha)
+
+        cursor.execute("INSERT INTO usuarios (username, senha) VALUES (%s, %s)", 
+                       (username, hash_senha))
+        db.commit()
+        cursor.close()
+
+        # Depois de cadastrar, redireciona ao login
+        return redirect(url_for("login"))
+
+    return render_template("cadastro.html")
+
+
+# ROTA DE LOGOUT
+@app.route("/logout")
+def logout():
+    # NOVO: remove o usuário da sessão
+    session.pop("usuario_id", None)
+    return redirect(url_for("login"))
+
 
 # ROTA PRINCIPAL — LISTA TODAS AS TAREFAS
 @app.route('/')
 def index():
-    # Mantido: usa cursor como dicionário para acessar por nome de coluna
+    # MUDANÇA: agora impede acesso de usuários não logados
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
+
     cursor = db.cursor(dictionary=True)
 
-    # Já havia sido alterado antes para incluir o campo "status" no SELECT
-    cursor.execute("SELECT * FROM tarefas")
+    # NOVO: agora seleciona APENAS tarefas do usuário logado
+    cursor.execute("SELECT * FROM tarefas WHERE usuario_id = %s", (session["usuario_id"],))
 
     tarefas = cursor.fetchall()
-    cursor.close()  # Boa prática adicionada em versões anteriores
+    cursor.close()
 
-    # Exibe agora as tarefas com status (pendente / concluída)
     return render_template('index.html', tarefas=tarefas)
+
 
 # ROTA PARA ADICIONAR NOVAS TAREFAS
 @app.route('/add', methods=['POST'])
 def add():
-    # strip() remove espaços extras — melhoria adicionada
+    # NOVO: só permite adicionar tarefas se estiver logado
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
+
     descricao = request.form['descricao'].strip()
 
-    # Previne salvar tarefas em branco
     if descricao:
         cursor = db.cursor()
 
-        # ALTERAÇÃO: agora o INSERT também inclui o campo "status"
-        # Todas as tarefas novas começam como 'pendente'
+        # NOVO: agora a tarefa é vinculada ao usuário via usuario_id
         cursor.execute(
-            "INSERT INTO tarefas (descricao, status) VALUES (%s, %s)",
-            (descricao, 'pendente')
+            "INSERT INTO tarefas (descricao, status, usuario_id) VALUES (%s, %s, %s)",
+            (descricao, 'pendente', session["usuario_id"])
         )
 
-        db.commit()  
-        cursor.close()  # Fechamento do cursor — adicionado como boa prática
+        db.commit()
+        cursor.close()
 
     return redirect('/')
 
-# CONCLUIR UMA TAREFA — já existia
+
+# ROTA PARA CONCLUIR UMA TAREFA
 @app.route('/concluir/<int:id>')
 def concluir(id):
+    # NOVO: agora só conclui tarefas do usuário logado
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
+
     cursor = db.cursor()
 
-    # Atualiza o campo status para "concluída"
-    cursor.execute("UPDATE tarefas SET status = 'concluída' WHERE id = %s", (id,))
+    cursor.execute(
+        "UPDATE tarefas SET status = 'concluída' WHERE id = %s AND usuario_id = %s",
+        (id, session["usuario_id"])
+    )
 
     db.commit()
     cursor.close()
     return redirect('/')
 
-# NOVA ROTA: EXCLUIR UMA TAREFA
+
+# ROTA PARA EXCLUIR UMA TAREFA
 @app.route('/excluir/<int:id>')
 def excluir(id):
-    # NOVO BLOCO adiciona funcionalidade de exclusão
+    # NOVO: exclusão restrita ao proprietário da tarefa
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
+# NOVO BLOCO adiciona funcionalidade de exclusão
     cursor = db.cursor()
-
     # Comando SQL DELETE para remover a tarefa do banco
-    cursor.execute("DELETE FROM tarefas WHERE id = %s", (id,))
+    cursor.execute(
+        "DELETE FROM tarefas WHERE id = %s AND usuario_id = %s",
+        (id, session["usuario_id"])
+    )
 
-    db.commit()   # Aplica a exclusão permanentemente
+    db.commit()
     cursor.close()
     return redirect('/')
 
-# NOVA ROTA: EDITAR UMA TAREFA
+
+# ROTA PARA EDITAR UMA TAREFA
 @app.route('/editar/<int:id>', methods=['GET', 'POST'])
 def editar(id):
-    # Usa dictionary=True para acessar colunas por nome
+    # NOVO: edição só pode ser feita por quem está logado
+    if "usuario_id" not in session:
+        return redirect(url_for("login"))
+
     cursor = db.cursor(dictionary=True)
-    
-    # Quando o formulário for enviado (POST):
+
     if request.method == 'POST':
         nova_descricao = request.form['descricao'].strip()
+
         if nova_descricao:
-            # Atualiza a descrição e redefine o status para "pendente"
-            #  (mesmo se ela já estava concluída)
+            # NOVO: agora a edição também considera o usuario_id
             cursor.execute("""
                 UPDATE tarefas 
                 SET descricao = %s, status = 'pendente'
-                WHERE id = %s
-            """, (nova_descricao, id))
+                WHERE id = %s AND usuario_id = %s
+            """, (nova_descricao, id, session["usuario_id"]))
+
             db.commit()
-        
+
         cursor.close()
         return redirect('/')
-    
-    # Quando a rota for acessada via GET (abrindo a página de edição)
+
     else:
-        # Busca os dados da tarefa para preencher o campo no formulário
-        cursor.execute("SELECT * FROM tarefas WHERE id = %s", (id,))
+        cursor.execute(
+            "SELECT * FROM tarefas WHERE id = %s AND usuario_id = %s",
+            (id, session["usuario_id"])
+        )
+
         tarefa = cursor.fetchone()
         cursor.close()
-        
-        # Renderiza o novo template "editar.html"
         return render_template('editar.html', tarefa=tarefa)
 
-# EXECUÇÃO DO SERVIDOR FLASK
 if __name__ == '__main__':
     app.run(debug=True)

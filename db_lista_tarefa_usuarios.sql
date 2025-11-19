@@ -1,5 +1,3 @@
-CREATE DATABASE  IF NOT EXISTS `db_lista_tarefa` /*!40100 DEFAULT CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci */ /*!80016 DEFAULT ENCRYPTION='N' */;
-USE `db_lista_tarefa`;
 -- MySQL dump 10.13  Distrib 8.0.43, for Win64 (x86_64)
 --
 -- Host: localhost    Database: db_lista_tarefa
@@ -18,28 +16,29 @@ USE `db_lista_tarefa`;
 /*!40111 SET @OLD_SQL_NOTES=@@SQL_NOTES, SQL_NOTES=0 */;
 
 --
--- Table structure for table `tarefas`
+-- Table structure for table `usuarios`
 --
 
-DROP TABLE IF EXISTS `tarefas`;
+DROP TABLE IF EXISTS `usuarios`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!50503 SET character_set_client = utf8mb4 */;
-CREATE TABLE `tarefas` (
+CREATE TABLE `usuarios` (
   `id` int NOT NULL AUTO_INCREMENT,
-  `descricao` varchar(255) NOT NULL,
-  `status` varchar(50) DEFAULT 'pendente',
-  PRIMARY KEY (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
+  `username` varchar(50) NOT NULL,
+  `senha` varchar(255) NOT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `username` (`username`)
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_0900_ai_ci;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `tarefas`
+-- Dumping data for table `usuarios`
 --
 
-LOCK TABLES `tarefas` WRITE;
-/*!40000 ALTER TABLE `tarefas` DISABLE KEYS */;
-INSERT INTO `tarefas` VALUES (1,'DIA 28/08/25 fazer testes no progama.','pendente'),(2,'DIA 29/08/31 subir COD para o GIThub.','pendente');
-/*!40000 ALTER TABLE `tarefas` ENABLE KEYS */;
+LOCK TABLES `usuarios` WRITE;
+/*!40000 ALTER TABLE `usuarios` DISABLE KEYS */;
+INSERT INTO `usuarios` VALUES (1,'paulo.corsi@aluno.faculdadeimpacta.com.br','scrypt:32768:8:1$pyLSOUYThmFwe9E7$f6b74a95a6b18b0786fd87a781ad48bfd193bdafdd00b65c74e3d4f222dfe7b89c5c7ee8196e94424d0ed583576fb22983b2eec2aad124dd8f2bc8d044a25e1d');
+/*!40000 ALTER TABLE `usuarios` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
@@ -51,4 +50,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2025-08-28 12:05:33
+-- Dump completed on 2025-11-15 21:26:30

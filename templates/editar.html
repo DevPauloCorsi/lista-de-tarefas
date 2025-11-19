@@ -2,15 +2,14 @@
 <html lang="pt-BR">
 <head>
     <meta charset="UTF-8">
-    <title>Editar Tarefa</title>
-    <!-- Linka o mesmo CSS do projeto principal -->
+    <title>Editar Tarefa</title>    
     <link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
 </head>
 <body>
 
-    <!-- Cabeçalho idêntico ao do index.html, mantém o design consistente -->
     <header>
         <h1>Editar Tarefa</h1>
+        <a href="{{ url_for('logout') }}" class="botao-sair">Sair</a>
     </header>
 
     <main>
@@ -33,6 +32,5 @@
     <footer>
         <p> Organize suas tarefas e durma tranquilo. </p>
     </footer>
-
 </body>
 </html>
